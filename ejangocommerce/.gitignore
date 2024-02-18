@@ -24,3 +24,5 @@ nordichomes_env/
 .venv
 .env/
 .venv/
+.myenv
+myenv
