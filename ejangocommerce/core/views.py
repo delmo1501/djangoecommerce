@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required 
 from django.db.models import Q
 
-from product.models import Product, Company
+from product.models import Product, Category
 
 from .forms import SignUpForm
 
@@ -42,13 +42,13 @@ def edit_myaccount(request):
     return render(request, 'core/edit_myaccount.html')
 
 def shop(request):
-    companies = Company.objects.all()
+    categories = Category.objects.all()
     products = Product.objects.all()
 
-    active_company = request.GET.get('company', '')
+    active_category = request.GET.get('category', '')
 
-    if active_company:
-        products = products.filter(company__slug=active_company)
+    if active_category:
+        products = products.filter(category__slug=active_category)
 
     query = request.GET.get('query', '')
 
@@ -56,8 +56,8 @@ def shop(request):
         products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
     context = {
-        'companies': companies,
+        'categories': categories,
         'products': products,
-        'active_company': active_company,
+        'active_category': active_category,
     }
     return render(request, 'core/shop.html', context)
