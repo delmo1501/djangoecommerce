@@ -17,6 +17,7 @@ ALLOWED_HOSTS = []
 
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL= '/login/'
 
 SESSION_COOKIE_AGE = 86400 # time in the cart before remove
 CART_SESSION_ID = 'cart'
@@ -34,6 +35,7 @@ INSTALLED_APPS = [
     'cart',
     'core',
     'product',
+    'order',
 ]
 
 MIDDLEWARE = [

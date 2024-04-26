@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login   
+from django.contrib.auth.decorators import login_required 
 from django.db.models import Q
 
-from product.models import Product, Category
+from product.models import Product, Company
 
 from .forms import SignUpForm
 
@@ -23,17 +24,31 @@ def signup(request):
         form = SignUpForm()        
     return render(request, 'core/signup.html', {'form': form})
 
-def login_old(request):
-    return render(request, 'core/login.html')
+@login_required
+def myaccount(request):
+    return render(request, 'core/myaccount.html')
+
+@login_required
+def edit_myaccount(request):
+    if request.method == 'POST':
+        user = request.user
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.username = request.POST.get('username')
+        user.save()
+
+        return redirect('myaccount')
+    return render(request, 'core/edit_myaccount.html')
 
 def shop(request):
-    categories = Category.objects.all()
+    companies = Company.objects.all()
     products = Product.objects.all()
 
-    active_category = request.GET.get('category', '')
+    active_company = request.GET.get('company', '')
 
-    if active_category:
-        products = products.filter(category__slug=active_category)
+    if active_company:
+        products = products.filter(company__slug=active_company)
 
     query = request.GET.get('query', '')
 
@@ -41,8 +56,8 @@ def shop(request):
         products = products.filter(Q(name__icontains=query) | Q(description__icontains=query))
 
     context = {
-        'categories': categories,
+        'companies': companies,
         'products': products,
-        'active_category': active_category,
+        'active_company': active_company,
     }
     return render(request, 'core/shop.html', context)
